@@ -46,6 +46,13 @@ public class CarBookingService {
        carBookingDAO.cancelCarBooking(id);
     }
 
+    public CarBooking[] findCarBookingByUserId(UUID userID){
+        if (userID == null){
+            throw new IllegalArgumentException("user must not be null");
+        }
+        return carBookingDAO.getBookingByUserId(userID);
+    }
+
 
 
 }
