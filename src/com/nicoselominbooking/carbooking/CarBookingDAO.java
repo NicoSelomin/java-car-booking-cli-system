@@ -99,4 +99,34 @@ public class CarBookingDAO {
         return finalResults;
     }
 
+
+    //This method finds ALL bookings for a specific car, using its registration number.
+
+    public CarBooking[] getBookingForCar(String carRegNumber){
+        //safety check
+        if (carRegNumber == null || carRegNumber.isEmpty()){
+            System.out.println("Cra registration number cannot be null or empty");
+
+            return new CarBooking[0];
+        }
+
+        //temp array for storage
+        CarBooking[] tempArray = new CarBooking[carBookings.length];
+        int counter = 0;
+
+        for (CarBooking booking : carBookings){
+            if (booking != null){
+                if(booking.getCar().getRegNumber().equals(carRegNumber)){
+                    tempArray[counter] = booking;
+                    counter ++;
+                }
+            }
+        }
+
+        CarBooking[] finalResults = new CarBooking[counter];
+        System.arraycopy(tempArray,0,finalResults,0,counter);
+
+        return finalResults;
+    }
+
 }

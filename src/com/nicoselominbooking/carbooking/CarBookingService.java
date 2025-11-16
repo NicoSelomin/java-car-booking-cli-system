@@ -48,9 +48,17 @@ public class CarBookingService {
 
     public CarBooking[] findCarBookingByUserId(UUID userID){
         if (userID == null){
-            throw new IllegalArgumentException("user must not be null");
+            throw new IllegalArgumentException("user id must not be null");
         }
         return carBookingDAO.getBookingByUserId(userID);
+    }
+
+    public CarBooking[] findCarBookingForCar(String regNumber){
+        if (regNumber == null){
+            throw new IllegalArgumentException("Car Registration number must not be null");
+        }
+
+        return carBookingDAO.getBookingForCar(regNumber);
     }
 
 
