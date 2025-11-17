@@ -13,4 +13,23 @@ public class CarDAO {
     public Car[] getAllCars(){
         return CARS;
     }
+
+    public Car[] findElectricCars() {
+
+        Car[] tempArray = new Car[CARS.length];
+        int count = 0;
+
+        for (Car car : CARS) {
+
+            if (car.isElectric()) {
+                tempArray[count] = car;
+                count++;
+            }
+        }
+
+        Car[] finalResults = new Car[count];
+        System.arraycopy(tempArray, 0, finalResults, 0, count);
+
+        return finalResults;
+    }
 }
