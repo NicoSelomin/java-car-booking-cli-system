@@ -107,7 +107,7 @@ public class Main {
     }
     //Book car
     private static void bookCar(){
-        System.out.println("--- [1] Book a car ---");
+        System.out.println("--- Book a car ---");
 
         System.out.println("Users available in the system:");
         ConsoleView.printUsers(userService.getAllUsers());
@@ -149,15 +149,15 @@ public class Main {
         }
 
         // 2. LOGIC: Check if the selected car is actually in the 'availableCars' list
-        boolean isTrulyAvailable = false;
+        boolean isAvailable = false;
         for (Car availableCar : availableCars) {
             if (availableCar.getRegNumber().equals(regNumber)) {
-                isTrulyAvailable = true;
+                isAvailable = true;
                 break;
             }
         }
 
-        if (!isTrulyAvailable) {
+        if (!isAvailable) {
             System.out.println("Error: This car is currently booked or unavailable.");
             return;
         }
