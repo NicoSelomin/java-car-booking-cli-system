@@ -1,5 +1,6 @@
 package com.nicoselominbooking;
 
+import com.nicoselominbooking.car.Car;
 import com.nicoselominbooking.car.CarService;
 import com.nicoselominbooking.carbooking.CarBooking;
 import com.nicoselominbooking.carbooking.CarBookingService;
@@ -106,6 +107,45 @@ public class Main {
     }
     //Book car
     private static void bookCar(){
+        System.out.println("Book a car");
+
+        System.out.println("Users available in the system");
+        ConsoleView.PrintUsers(userService.getAllUsers());
+
+        System.out.println("Enter the user ID : ");
+
+        String userId = scanner.nextLine();
+        User user = null;
+        try{
+            user = userService.getUser(UUID.fromString(userId));
+        }catch (Exception e){
+            System.out.println("Invalid user id");
+        }
+
+        if (user == null) {
+            System.out.println("User not found");
+            return;
+        }
+
+        System.out.println("Our Cars");
+        ConsoleView.PrintCars(carService.getAllCars());
+
+        System.out.println("Enter the car Reg Number : ");
+        String regNumber = scanner.nextLine();
+
+        //Find car
+        Car car = carService.getCar(regNumber);
+
+        if (car == null){
+            System.out.println("Car not found");
+        }
+
+        try {
+            carBookingService.bookCar(user,car);
+            System.out.println("Car booked successfully");
+        }catch (Exception e){
+            System.out.println("Error during the booking");
+        }
 
     }
 
