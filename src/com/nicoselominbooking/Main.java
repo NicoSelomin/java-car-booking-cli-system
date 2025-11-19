@@ -61,17 +61,17 @@ public class Main {
     //Get All Users
     private static void getAllUsers() {
         System.out.println("List of all users");
-        ConsoleView.PrintUsers(userService.getAllUsers());
+        ConsoleView.printUsers(userService.getAllUsers());
     }
     // Get Cars
     private static void getAvailableCars(){
         System.out.println("Cars List");
-        ConsoleView.PrintCars(carService.getAllCars());
+        ConsoleView.printCars(carService.getAllCars());
     }
     //Get Electric Cars
     private static void getAvailableElectricCar(){
         System.out.println("Our Electric Cars");
-        ConsoleView.PrintCars(carService.getAllElectricCars());
+        ConsoleView.printCars(carService.getAllElectricCars());
     }
     //Get All Booking
     private static void getAllBookings(){
@@ -83,7 +83,7 @@ public class Main {
         System.out.println("Find user's bookings");
 
         System.out.println("Users");
-        ConsoleView.PrintUsers(userService.getAllUsers());
+        ConsoleView.printUsers(userService.getAllUsers());
 
         System.out.println("Enter User's ID :");
         String userId = scanner.nextLine();
@@ -107,46 +107,68 @@ public class Main {
     }
     //Book car
     private static void bookCar(){
-        System.out.println("Book a car");
+        System.out.println("--- [1] Book a car ---");
 
-        System.out.println("Users available in the system");
-        ConsoleView.PrintUsers(userService.getAllUsers());
+        System.out.println("Users available in the system:");
+        ConsoleView.printUsers(userService.getAllUsers());
 
-        System.out.println("Enter the user ID : ");
-
-        String userId = scanner.nextLine();
+        System.out.print("Enter the user ID: ");
+        String userIdInput = scanner.nextLine();
         User user = null;
         try{
-            user = userService.getUser(UUID.fromString(userId));
+            user = userService.getUser(UUID.fromString(userIdInput));
         }catch (Exception e){
-            System.out.println("Invalid user id");
-        }
-
-        if (user == null) {
-            System.out.println("User not found");
+            System.out.println("Invalid user ID.");
             return;
         }
 
-        System.out.println("Our Cars");
-        ConsoleView.PrintCars(carService.getAllCars());
+        if (user == null) {
+            System.out.println("User not found. Returning to menu.");
+            return;
+        }
 
-        System.out.println("Enter the car Reg Number : ");
+        // --- LOGIC: Fetch available cars instead of all cars ---
+        Car[] availableCars = carBookingService.getAvailableCars();
+        System.out.println("Available Cars:");
+        ConsoleView.printCars(availableCars);
+
+        if (availableCars.length == 0) {
+            System.out.println("No cars are currently available for booking.");
+            return;
+        }
+
+        System.out.print("Enter the car Reg Number: ");
         String regNumber = scanner.nextLine();
 
-        //Find car
+        // 1. Find car object using the service (ensures the car exists)
         Car car = carService.getCar(regNumber);
 
-        if (car == null){
-            System.out.println("Car not found");
+        if (car == null) {
+            System.out.println("Car not found in the fleet.");
+            return;
         }
 
+        // 2. LOGIC: Check if the selected car is actually in the 'availableCars' list
+        boolean isTrulyAvailable = false;
+        for (Car availableCar : availableCars) {
+            if (availableCar.getRegNumber().equals(regNumber)) {
+                isTrulyAvailable = true;
+                break;
+            }
+        }
+
+        if (!isTrulyAvailable) {
+            System.out.println("Error: This car is currently booked or unavailable.");
+            return;
+        }
+
+        // --- FINAL BOOKING ---
         try {
-            carBookingService.bookCar(user,car);
-            System.out.println("Car booked successfully");
+            carBookingService.bookCar(user, car);
+            System.out.println("Car booked successfully for " + user.getName() + ".");
         }catch (Exception e){
-            System.out.println("Error during the booking");
+            System.out.println("Error during the booking: " + e.getMessage());
         }
-
     }
 
 }
