@@ -1,13 +1,16 @@
 package com.nicoselominbooking.carbooking;
 
 import com.nicoselominbooking.car.Car;
+import com.nicoselominbooking.car.CarDAO;
 import com.nicoselominbooking.user.User;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class CarBookingService {
     private final CarBookingDAO carBookingDAO = new CarBookingDAO();
+    private final CarDAO carDAO = new CarDAO();
 
 
     public void bookCar(User user, Car car){
@@ -59,6 +62,32 @@ public class CarBookingService {
         }
 
         return carBookingDAO.getBookingForCar(regNumber);
+    }
+
+    public Car[] getAvailableCars() {
+        Car[] allCars = carDAO.getAllCars();
+
+        CarBooking[] allBookings = carBookingDAO.getCarBookings();
+
+        Car[] tempAvailable = new Car[allCars.length];
+        int count = 0;
+
+        for (Car car : allCars) {
+            boolean isBooked = false;
+
+            for (CarBooking booking : allBookings) {
+
+                if (booking != null && !booking.isCanceled() && booking.getCar().equals(car)) {
+                    isBooked = true;
+                    break;
+                }
+            }
+
+            if (!isBooked) {
+                tempAvailable[count++] = car;
+            }
+        }
+        return Arrays.copyOf(tempAvailable, count);
     }
 
 
