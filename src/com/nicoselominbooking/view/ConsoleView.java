@@ -20,7 +20,7 @@ public class ConsoleView {
     }
 
     //Print Car helper
-    public static void PrintCars(Car[] cars) {
+    public static void printCars(Car[] cars) {
         if (cars.length == 0) {
             System.out.println("No car available");
         }
@@ -37,7 +37,7 @@ public class ConsoleView {
     }
 
     //User print helper
-    public static void PrintUsers(User[] users) {
+    public static void printUsers(User[] users) {
         if (users.length == 0) {
             System.out.println("No user find in the System");
         }
