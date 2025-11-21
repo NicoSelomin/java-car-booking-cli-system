@@ -1,7 +1,9 @@
 package com.nicoselominbooking.carbooking;
 
 import com.nicoselominbooking.car.Car;
-import com.nicoselominbooking.car.CarDAO;
+import com.nicoselominbooking.car.CarArrayDataAccessService;
+import com.nicoselominbooking.car.CarDao;
+import com.nicoselominbooking.car.CarFileDataAccessService;
 import com.nicoselominbooking.user.User;
 
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ import java.util.UUID;
 
 public class CarBookingService {
     private final CarBookingDAO carBookingDAO = new CarBookingDAO();
-    private final CarDAO carDAO = new CarDAO();
+    private final CarDao carDAO = new CarFileDataAccessService();
 
 
     public void bookCar(User user, Car car){
