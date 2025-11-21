@@ -1,12 +1,16 @@
 package com.nicoselominbooking.car;
 
-import java.util.Arrays;
+import com.nicoselominbooking.carbooking.CarBooking;
 
 public class CarService {
-    private final CarDAO carDAO = new CarDAO();
+    private final CarDao carDao;
+
+    public CarService(){
+        this.carDao = new CarFileDataAccessService();
+    }
 
     public Car[] getAllCars(){
-        return carDAO.getAllCars();
+        return carDao.getAllCars();
     }
 
     public Car getCar(String regNumber){
@@ -19,7 +23,7 @@ public class CarService {
     }
 
     public  Car[] getAllElectricCars(){
-        return carDAO.findElectricCars();
+        return carDao.findElectricCars();
     }
 
 }

@@ -5,5 +5,6 @@ public enum Brand {
     VW,
     MERCEDES,
     AUDI,
-    TOYOTA
+    TOYOTA,
+    XIAOMI
 }

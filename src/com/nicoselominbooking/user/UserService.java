@@ -3,10 +3,14 @@ package com.nicoselominbooking.user;
 import java.util.UUID;
 
 public class UserService {
-    private final UserDAO userDAO = new UserDAO();
+    private final  UserDao userDao;
+
+    public UserService(){
+        this.userDao = new UserFileDataAccessService();
+    }
 
     public User[] getAllUsers(){
-        return userDAO.getUsers();
+        return userDao.getUsers();
     }
 
     public User getUser(UUID id){
