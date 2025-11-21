@@ -2,7 +2,7 @@ package com.nicoselominbooking.car;
 
 import java.math.BigDecimal;
 
-public class CarDAO {
+public class CarArrayDataAccessService implements CarDao{
     private static final Car[] CARS = {
             new Car("1234", Brand.TESLA, new BigDecimal("89.00"), true),
             new Car("5678", Brand.AUDI, new BigDecimal("50.00"),false),
@@ -10,10 +10,12 @@ public class CarDAO {
             new Car("2584", Brand.TOYOTA, new BigDecimal("100"), false)
     };
 
+    @Override
     public Car[] getAllCars(){
         return CARS;
     }
 
+    @Override
     public Car[] findElectricCars() {
 
         Car[] tempArray = new Car[CARS.length];
