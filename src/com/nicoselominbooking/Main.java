@@ -1,10 +1,13 @@
 package com.nicoselominbooking;
 
 import com.nicoselominbooking.car.Car;
+import com.nicoselominbooking.car.CarDAO;
 import com.nicoselominbooking.car.CarService;
 import com.nicoselominbooking.carbooking.CarBooking;
+import com.nicoselominbooking.carbooking.CarBookingDAO;
 import com.nicoselominbooking.carbooking.CarBookingService;
 import com.nicoselominbooking.user.User;
+import com.nicoselominbooking.user.UserDAO;
 import com.nicoselominbooking.user.UserService;
 import com.nicoselominbooking.view.ConsoleView; //ConsoleView has the static print methods
 
@@ -12,9 +15,12 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class Main {
-    private static final UserService userService = new UserService();
-    private static final CarService carService = new CarService();
-    private static final CarBookingService carBookingService = new CarBookingService();
+    private static UserDAO userDAO = new UserDAO();
+    private static final UserService userService = new UserService(userDAO);
+    private static final CarDAO carDAO = new CarDAO();
+    private static final CarBookingDAO carBookingDAO = new CarBookingDAO();
+    private static final CarService carService = new CarService(carDAO);
+    private static final CarBookingService carBookingService = new CarBookingService(carBookingDAO, carService);
     private static Scanner scanner = new Scanner(System.in);
 
 

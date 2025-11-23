@@ -2,7 +2,7 @@ package com.nicoselominbooking.user;
 
 import java.util.UUID;
 
-public class UserArrayDataAccessService implements UserDao{
+public class UserDAO implements UserDao{
     private final static User[] users = {
             new User(UUID.randomUUID(), "Alice Smith"),
             new User(UUID.randomUUID(), "Bob Johnson"),

@@ -3,12 +3,17 @@ package com.nicoselominbooking.car;
 import com.nicoselominbooking.carbooking.CarBooking;
 
 public class CarService {
-    private final CarDAO carDao = new CarDAO();
+    private CarDAO carDao;
+
+    public CarService(CarDAO carDao) {
+        this.carDao = carDao;
+    }
 
 
     public Car[] getAllCars(){
         return carDao.getAllCars();
     }
+
 
     public Car getCar(String regNumber){
         for (Car car : getAllCars()){
