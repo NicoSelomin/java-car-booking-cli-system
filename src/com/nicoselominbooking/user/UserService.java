@@ -14,12 +14,19 @@ public class UserService {
         return userDAO.getUsers();
     }
 
-    public User getUser(UUID id){
-        for (User user : getAllUsers()){
-            if (user.getId().equals(id)){
-                return user;
-            }
+    public User getUser(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("User id must not be null");
         }
-        throw new IllegalStateException(String.format("User with id %s not found", id));
+
+        return getAllUsers().stream()
+                .filter(user -> id.equals(user.getId()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                String.format("User with id %s not found", id)
+                        )
+                );
     }
+
 }
