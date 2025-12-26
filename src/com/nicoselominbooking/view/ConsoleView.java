@@ -4,11 +4,14 @@ import com.nicoselominbooking.car.Car;
 import com.nicoselominbooking.carbooking.CarBooking;
 import com.nicoselominbooking.user.User;
 
+import java.util.List;
+
 public class ConsoleView {
-    //Display menu
+
+    // Display main menu
     public static void displayMenu() {
         System.out.println("""
-                \n
+                
                  [1]  Book Car
                  [2]  View All User Booked Cars
                  [3]  View All Bookings
@@ -19,15 +22,18 @@ public class ConsoleView {
                 """);
     }
 
-    //Print Car helper
-    public static void printCars(Car[] cars) {
-        if (cars.length == 0) {
-            System.out.println("No car available");
+    // Print cars
+    public static void printCars(List<Car> cars) {
+        if (cars.isEmpty()) {
+            System.out.println("No car available.");
+            return;
         }
-        int count = 0;
+
+        int count = 1;
         for (Car car : cars) {
-            count++;
-            System.out.printf(count + "- Reg Number : %s , Brand : %s, Rent : %s/day, Electric : %s\n",
+            System.out.printf(
+                    "%d- Reg Number: %s | Brand: %s | Rent: %s/day | Electric: %s%n",
+                    count++,
                     car.getRegNumber(),
                     car.getBrand(),
                     car.getRentalPerDay(),
@@ -36,36 +42,47 @@ public class ConsoleView {
         }
     }
 
-    //User print helper
-    public static void printUsers(User[] users) {
-        if (users.length == 0) {
-            System.out.println("No user find in the System");
+    // Print users
+    public static void printUsers(List<User> users) {
+        if (users.isEmpty()) {
+            System.out.println("No user found in the system.");
+            return;
         }
-        int count = 0;
+
+        int count = 1;
         for (User user : users) {
-            count++;
-            if (user == null) continue;
-            System.out.printf(count + "- ID : %s, Name : %s\n", user.getId(), user.getName());
+            System.out.printf(
+                    "%d- ID: %s | Name: %s%n",
+                    count++,
+                    user.getId(),
+                    user.getName()
+            );
         }
     }
 
-    public static void printBookings(CarBooking[] bookings) {
-        int count = 0;
-
-        for (CarBooking booking : bookings) {
-            if (booking != null) {
-                count++;
-                System.out.printf("  -> [Booking ID: %s]\n     Client: %s\n     Car: %s (%s)\n     Status: %s\n",
-                        booking.getBookingId(),
-                        booking.getUser().getName(),
-                        booking.getCar().getBrand(),
-                        booking.getCar().getRegNumber(),
-                        booking.isCanceled() ? "Canceled" : "Active");
-                System.out.println("     ----------");
-            }
+    // Print bookings
+    public static void printBookings(List<CarBooking> bookings) {
+        if (bookings.isEmpty()) {
+            System.out.println("No booking found in the system.");
+            return;
         }
-        if (count == 0){
-            System.out.printf("No Booking found in the system");
+
+        int count = 1;
+        for (CarBooking booking : bookings) {
+            System.out.printf("""
+                    %d- Booking ID: %s
+                       Client: %s
+                       Car: %s (%s)
+                       Status: %s
+                       ----------
+                    """,
+                    count++,
+                    booking.getBookingId(),
+                    booking.getUser().getName(),
+                    booking.getCar().getBrand(),
+                    booking.getCar().getRegNumber(),
+                    booking.isCanceled() ? "Canceled" : "Active"
+            );
         }
     }
 }

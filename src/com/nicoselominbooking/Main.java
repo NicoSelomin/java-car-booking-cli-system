@@ -9,105 +9,99 @@ import com.nicoselominbooking.carbooking.CarBookingService;
 import com.nicoselominbooking.user.User;
 import com.nicoselominbooking.user.UserDAO;
 import com.nicoselominbooking.user.UserService;
-import com.nicoselominbooking.view.ConsoleView; //ConsoleView has the static print methods
+import com.nicoselominbooking.view.ConsoleView;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class Main {
-    private static UserDAO userDAO = new UserDAO();
-    private static final UserService userService = new UserService(userDAO);
-    private static final CarDAO carDAO = new CarDAO();
-    private static final CarBookingDAO carBookingDAO = new CarBookingDAO();
-    private static final CarService carService = new CarService(carDAO);
-    private static final CarBookingService carBookingService = new CarBookingService(carBookingDAO, carService);
-    private static Scanner scanner = new Scanner(System.in);
 
+    private static final UserDAO userDAO = new UserDAO();
+    private static final UserService userService = new UserService(userDAO);
+
+    private static final CarDAO carDAO = new CarDAO();
+    private static final CarService carService = new CarService(carDAO);
+
+    private static final CarBookingDAO carBookingDAO = new CarBookingDAO();
+    private static final CarBookingService carBookingService =
+            new CarBookingService(carBookingDAO, carService);
+
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+
         boolean running = true;
 
         while (running) {
-
             ConsoleView.displayMenu();
             String input = scanner.nextLine();
 
             try {
                 int choice = Integer.parseInt(input);
-                switch (choice) {
-                    case 1:
-                        bookCar();
-                        break;
-                    case 2:
-                        getUserBookedCars();
-                        break;
-                    case 3:
-                        getAllBookings();
-                        break;
-                    case 4:
-                        getAvailableCars();
-                        break;
-                    case 5:
-                        getAvailableElectricCars();
-                        break;
-                    case 6:
-                        getAllUsers();
-                        break;
-                    case 7:
-                        running = false;
-                        System.out.println("Thank you for using NicoBooking! \n See you next time");
-                        break;
 
-                    default:
-                        System.out.println("You must select an option within our menu");
+                switch (choice) {
+                    case 1 -> bookCar();
+                    case 2 -> getUserBookedCars();
+                    case 3 -> getAllBookings();
+                    case 4 -> getAvailableCars();
+                    case 5 -> getAvailableElectricCars();
+                    case 6 -> getAllUsers();
+                    case 7 -> {
+                        running = false;
+                        System.out.println("Thank you for using NicoBooking!\nSee you next time 👋");
+                    }
+                    default -> System.out.println("Please select a valid option (1–7).");
                 }
+
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number (1-7).");
+                System.out.println("Invalid input. Please enter a number (1–7).");
             }
         }
 
         scanner.close();
     }
 
+    // ===================== USERS =====================
 
-    //Get All Users
     private static void getAllUsers() {
         System.out.println("--- List of all users ---");
         ConsoleView.printUsers(userService.getAllUsers());
     }
 
-    // Get Available Cars
-    private static void getAvailableCars(){
-        System.out.println("--- Available Cars List ---");
+    // ===================== CARS =====================
+
+    private static void getAvailableCars() {
+        System.out.println("--- Available Cars ---");
         ConsoleView.printCars(carBookingService.getAvailableCars());
     }
 
-    //Get Electric Cars
-    private static void getAvailableElectricCars(){
-        System.out.println("--- Our Available Electric Cars ---");
+    private static void getAvailableElectricCars() {
+        System.out.println("--- Available Electric Cars ---");
         ConsoleView.printCars(carService.getAllElectricCars());
     }
 
-    //Get All Booking
-    private static void getAllBookings(){
-        System.out.println("--- Bookings List ---");
+    // ===================== BOOKINGS =====================
+
+    private static void getAllBookings() {
+        System.out.println("--- All Bookings ---");
         ConsoleView.printBookings(carBookingService.getAllBookings());
     }
 
-    //Get user booked cars
-    private static void getUserBookedCars(){
+    private static void getUserBookedCars() {
         System.out.println("--- Find user's bookings ---");
 
-        System.out.println("Users");
         ConsoleView.printUsers(userService.getAllUsers());
 
-        System.out.print("Enter User's ID: ");
-        String userId = scanner.nextLine();
-        User user = null;
-        try{
-            user = userService.getUser(UUID.fromString(userId));
-        }catch (Exception e){
-            System.out.println("Invalid user ID format.");
+        System.out.print("Enter User ID: ");
+        String input = scanner.nextLine();
+
+        User user;
+        try {
+            user = userService.getUser(UUID.fromString(input));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid UUID format.");
+            return;
         }
 
         if (user == null) {
@@ -115,76 +109,53 @@ public class Main {
             return;
         }
 
-        System.out.println("Booking for user: "+ user.getName());
+        System.out.println("Bookings for user: " + user.getName());
+        List<CarBooking> bookings =
+                carBookingService.findCarBookingByUserId(user.getId());
 
-        CarBooking[] bookings = carBookingService.findCarBookingByUserId(user.getId());
         ConsoleView.printBookings(bookings);
     }
 
-    //Book car
-    private static void bookCar(){
-        System.out.println("--- Book a car ---");
+    private static void bookCar() {
+        System.out.println("--- Book a Car ---");
 
-        System.out.println("Users available in the system:");
         ConsoleView.printUsers(userService.getAllUsers());
 
-        System.out.print("Enter the user ID: ");
-        String userIdInput = scanner.nextLine();
-        User user = null;
-        try{
-            user = userService.getUser(UUID.fromString(userIdInput));
-        }catch (Exception e){
+        System.out.print("Enter User ID: ");
+        String userInput = scanner.nextLine();
+
+        User user;
+        try {
+            user = userService.getUser(UUID.fromString(userInput));
+        } catch (IllegalArgumentException e) {
             System.out.println("Invalid user ID.");
             return;
         }
 
         if (user == null) {
-            System.out.println("User not found. Returning to menu.");
+            System.out.println("User not found.");
             return;
         }
 
-        // Fetch available cars
-        Car[] availableCars = carBookingService.getAvailableCars();
-        System.out.println("Available Cars:");
+        List<Car> availableCars = carBookingService.getAvailableCars();
         ConsoleView.printCars(availableCars);
 
-        if (availableCars.length == 0) {
-            System.out.println("No cars are currently available for booking.");
+        if (availableCars.isEmpty()) {
+            System.out.println("No cars available for booking.");
             return;
         }
 
-        System.out.print("Enter the car Reg Number: ");
+        System.out.print("Enter Car Registration Number: ");
         String regNumber = scanner.nextLine();
 
-        // Find car object using the service
         Car car = carService.getCar(regNumber);
 
-        if (car == null) {
-            System.out.println("Car not found in the fleet.");
+        if (car == null || !availableCars.contains(car)) {
+            System.out.println("Car is not available.");
             return;
         }
 
-        // Check if the selected car is actually in the 'availableCars' list
-        boolean isAvailable = false;
-        for (Car availableCar : availableCars) {
-            if (availableCar.getRegNumber().equals(regNumber)) {
-                isAvailable = true;
-                break;
-            }
-        }
-
-        if (!isAvailable) {
-            System.out.println("Error: This car is currently booked or unavailable.");
-            return;
-        }
-
-        // Book the car
-        try {
-            carBookingService.bookCar(user, car);
-            System.out.println("Car booked successfully for " + user.getName() + ".");
-        }catch (Exception e){
-            System.out.println("Error during the booking: " + e.getMessage());
-        }
+        carBookingService.bookCar(user, car);
+        System.out.println("Car booked successfully for " + user.getName() + ".");
     }
-
 }

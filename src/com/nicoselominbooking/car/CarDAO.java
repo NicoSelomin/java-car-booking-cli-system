@@ -1,37 +1,37 @@
 package com.nicoselominbooking.car;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CarDAO{
-    private static final Car[] CARS = {
-            new Car("1234", Brand.TESLA, new BigDecimal("89.00"), true),
-            new Car("5678", Brand.AUDI, new BigDecimal("50.00"),false),
-            new Car("5678", Brand.MERCEDES, new BigDecimal("77.00"), false),
-            new Car("2584", Brand.TOYOTA, new BigDecimal("100"), false)
+    private static final List<Car> CARS = new ArrayList<>();
+
+    static {
+            CARS.add(new Car("1234", Brand.TESLA, new BigDecimal("89.00"), true));
+            CARS.add(new Car("5678", Brand.AUDI, new BigDecimal("50.00"),false));
+            CARS.add(new Car("5678", Brand.MERCEDES, new BigDecimal("77.00"), false));
+            CARS.add(new Car("2584", Brand.TOYOTA, new BigDecimal("100"), false));
     };
 
 
-    public Car[] getAllCars(){
+    public List<Car> getAllCars(){
+
         return CARS;
     }
 
 
-    public Car[] findElectricCars() {
+    public List<Car> findElectricCars() {
 
-        Car[] tempArray = new Car[CARS.length];
-        int count = 0;
+        List<Car> electricCar = new ArrayList<>();
 
         for (Car car : CARS) {
 
             if (car.isElectric()) {
-                tempArray[count] = car;
-                count++;
+                electricCar.add(car);
             }
         }
 
-        Car[] finalResults = new Car[count];
-        System.arraycopy(tempArray, 0, finalResults, 0, count);
-
-        return finalResults;
+        return electricCar;
     }
 }
