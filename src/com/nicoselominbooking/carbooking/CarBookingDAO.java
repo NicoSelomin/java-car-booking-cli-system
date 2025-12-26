@@ -8,7 +8,7 @@ public class CarBookingDAO {
     private static final List<CarBooking> carBookings = new ArrayList<>();
 
     public List<CarBooking> getCarBookings() {
-        return carBookings;
+        return List.copyOf(carBookings);
     }
 
     public void book(CarBooking carBooking) {
@@ -22,6 +22,17 @@ public class CarBookingDAO {
         if (id == null) {
             throw new IllegalArgumentException("Booking ID cannot be null");
         }
+
+        carBookings.stream()
+                .filter(booking -> id.equals(booking.getBookingId()))
+                .findFirst()
+                .ifPresentOrElse(
+                        booking -> {
+                            booking.setCanceled(true);
+                            System.out.println("Booking " + id + " canceled successfully.");
+                        },
+                        () -> System.out.println("Cancel failed: Booking " + id + " not found.")
+                );
 
         for (CarBooking booking : carBookings){
             if (booking.getBookingId().equals(id)){
@@ -39,14 +50,10 @@ public class CarBookingDAO {
             throw new IllegalArgumentException("User ID must not be null");
         }
 
-        List<CarBooking> results = new ArrayList<>();
-
-        for (CarBooking booking : carBookings){
-            if (booking.getUser().getId().equals(userID)){
-                results.add(booking);
-            }
-        }
-        return results;
+        return carBookings.stream()
+                .filter(booking -> booking.getUser() != null)
+                .filter(booking -> userID.equals(booking.getUser().getId()))
+                .toList();
     }
 
 
@@ -55,14 +62,9 @@ public class CarBookingDAO {
             throw new IllegalArgumentException("Car registration number cannot be null or empty");
         }
 
-        List<CarBooking> results = new ArrayList<>();
-
-        for (CarBooking booking : carBookings){
-            if (booking.getCar().getRegNumber().equals(carRegNumber)){
-                results.add(booking);
-            }
-        }
-        return results;
+        return carBookings.stream()
+                .filter(booking -> carRegNumber.equals(booking.getCar().getRegNumber()))
+                .toList();
     }
 
 }

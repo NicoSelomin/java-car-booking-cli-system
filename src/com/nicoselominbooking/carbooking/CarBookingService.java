@@ -21,15 +21,20 @@ public class CarBookingService {
     }
 
 
-    public void bookCar(User user, Car car){
-        if (user == null || car == null){
-            throw new IllegalArgumentException("User and Car must not null");
+    public void bookCar(User user, Car car) {
+
+        if (user == null || car == null) {
+            throw new IllegalArgumentException("User and Car must not be null");
         }
 
-        for (CarBooking existingBooking : carBookingDAO.getCarBookings()){
-            if (!existingBooking.isCanceled() && existingBooking.getCar().equals(car)) {
-                throw new IllegalStateException("Car is already booked");
-            }
+        boolean alreadyBooked = carBookingDAO.getCarBookings().stream()
+                .anyMatch(booking ->
+                        !booking.isCanceled()
+                                && booking.getCar().equals(car)
+                );
+
+        if (alreadyBooked) {
+            throw new IllegalStateException("Car is already booked");
         }
 
         CarBooking newCarBooking = new CarBooking(
@@ -40,8 +45,6 @@ public class CarBookingService {
         );
 
         carBookingDAO.book(newCarBooking);
-
-        System.out.println("Car booked successfully !");
     }
 
     public List<CarBooking> getAllBookings(){
@@ -71,26 +74,16 @@ public class CarBookingService {
     }
 
     public List<Car> getAvailableCars() {
-        List<Car> allCars = carService.getAllCars();
         List<CarBooking> allBookings = carBookingDAO.getCarBookings();
 
-        List<Car> availableCars = new ArrayList<>();
-
-        for (Car car : allCars) {
-            boolean isBooked = false;
-
-            for (CarBooking booking : allBookings) {
-                if (!booking.isCanceled() && booking.getCar().equals(car)){
-                    isBooked = true;
-                    break;
-                }
-            }
-
-            if (!isBooked) {
-                availableCars.add(car);
-            }
-        }
-        return availableCars;
+        return carService.getAllCars().stream()
+                .filter(car ->
+                        allBookings.stream()
+                                .noneMatch(booking ->
+                                        !booking.isCanceled() && booking.getCar().equals(car)
+                                        )
+                        )
+                .toList();
     }
 
 

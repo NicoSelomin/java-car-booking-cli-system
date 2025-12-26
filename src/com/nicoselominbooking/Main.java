@@ -62,14 +62,14 @@ public class Main {
         scanner.close();
     }
 
-    // ===================== USERS =====================
+    // USERS
 
     private static void getAllUsers() {
         System.out.println("--- List of all users ---");
         ConsoleView.printUsers(userService.getAllUsers());
     }
 
-    // ===================== CARS =====================
+    // CARS
 
     private static void getAvailableCars() {
         System.out.println("--- Available Cars ---");
@@ -81,7 +81,7 @@ public class Main {
         ConsoleView.printCars(carService.getAllElectricCars());
     }
 
-    // ===================== BOOKINGS =====================
+    // BOOKINGS
 
     private static void getAllBookings() {
         System.out.println("--- All Bookings ---");

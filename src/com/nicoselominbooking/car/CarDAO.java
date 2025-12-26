@@ -16,22 +16,13 @@ public class CarDAO{
 
 
     public List<Car> getAllCars(){
-
         return CARS;
     }
 
 
     public List<Car> findElectricCars() {
-
-        List<Car> electricCar = new ArrayList<>();
-
-        for (Car car : CARS) {
-
-            if (car.isElectric()) {
-                electricCar.add(car);
-            }
-        }
-
-        return electricCar;
+        return CARS.stream()
+                .filter(Car::isElectric)
+                .toList();
     }
 }
