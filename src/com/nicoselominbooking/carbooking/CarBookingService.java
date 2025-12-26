@@ -6,7 +6,9 @@ import com.nicoselominbooking.car.CarService;
 import com.nicoselominbooking.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class CarBookingService {
@@ -20,15 +22,13 @@ public class CarBookingService {
 
 
     public void bookCar(User user, Car car){
-        //Verify if the arguments are not empty
         if (user == null || car == null){
             throw new IllegalArgumentException("User and Car must not null");
         }
 
         for (CarBooking existingBooking : carBookingDAO.getCarBookings()){
-            if (existingBooking != null && existingBooking.getCar().equals(car)){
-                System.out.println("Sorry, this car is already booked");
-                return;
+            if (!existingBooking.isCanceled() && existingBooking.getCar().equals(car)) {
+                throw new IllegalStateException("Car is already booked");
             }
         }
 
@@ -44,7 +44,7 @@ public class CarBookingService {
         System.out.println("Car booked successfully !");
     }
 
-    public CarBooking[] getAllBookings(){
+    public List<CarBooking> getAllBookings(){
         return carBookingDAO.getCarBookings();
     }
 
@@ -55,14 +55,14 @@ public class CarBookingService {
        carBookingDAO.cancelCarBooking(id);
     }
 
-    public CarBooking[] findCarBookingByUserId(UUID userID){
+    public List<CarBooking> findCarBookingByUserId(UUID userID){
         if (userID == null){
             throw new IllegalArgumentException("user id must not be null");
         }
         return carBookingDAO.getBookingByUserId(userID);
     }
 
-    public CarBooking[] findCarBookingForCar(String regNumber){
+    public List<CarBooking> findCarBookingForCar(String regNumber){
         if (regNumber == null){
             throw new IllegalArgumentException("Car Registration number must not be null");
         }
@@ -70,30 +70,27 @@ public class CarBookingService {
         return carBookingDAO.getBookingForCar(regNumber);
     }
 
-    public Car[] getAvailableCars() {
-        Car[] allCars = carService.getAllCars();
+    public List<Car> getAvailableCars() {
+        List<Car> allCars = carService.getAllCars();
+        List<CarBooking> allBookings = carBookingDAO.getCarBookings();
 
-        CarBooking[] allBookings = carBookingDAO.getCarBookings();
-
-        Car[] tempAvailable = new Car[allCars.length];
-        int count = 0;
+        List<Car> availableCars = new ArrayList<>();
 
         for (Car car : allCars) {
             boolean isBooked = false;
 
             for (CarBooking booking : allBookings) {
-
-                if (booking != null && !booking.isCanceled() && booking.getCar().equals(car)) {
+                if (!booking.isCanceled() && booking.getCar().equals(car)){
                     isBooked = true;
                     break;
                 }
             }
 
             if (!isBooked) {
-                tempAvailable[count++] = car;
+                availableCars.add(car);
             }
         }
-        return Arrays.copyOf(tempAvailable, count);
+        return availableCars;
     }
 
 

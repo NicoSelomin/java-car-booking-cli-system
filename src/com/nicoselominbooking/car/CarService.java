@@ -2,6 +2,8 @@ package com.nicoselominbooking.car;
 
 import com.nicoselominbooking.carbooking.CarBooking;
 
+import java.util.List;
+
 public class CarService {
     private CarDAO carDao;
 
@@ -10,7 +12,7 @@ public class CarService {
     }
 
 
-    public Car[] getAllCars(){
+    public List<Car> getAllCars(){
         return carDao.getAllCars();
     }
 
@@ -24,7 +26,7 @@ public class CarService {
         throw new IllegalStateException(String.format("Car with reg %s not found", regNumber));
     }
 
-    public  Car[] getAllElectricCars(){
+    public  List<Car> getAllElectricCars(){
         return carDao.findElectricCars();
     }
 
